@@ -34,7 +34,7 @@ calls** of any kind.
    The strip the bar occupies is **reserved like a real screen edge**, so
    maximized windows stop below it and their tabs/buttons stay reachable.
 3. **A taskbar hider.** Hide the taskbar to reclaim the screen and the clutter,
-   and bring it back instantly when you want it (**Win+S**, or the tray menu).
+   and bring it back instantly when you want it (**Ctrl+Alt+H**, or the tray menu).
 
 The result is a desktop that leans on **keyboard + one bar** instead of the
 Start menu and taskbar — the kind of flow macOS (Spotlight + menu bar) and Linux
@@ -85,15 +85,15 @@ release build runs silently):
 
 On launch the taskbar is hidden, the Win key is remapped, and the top bar
 appears. To start it automatically with Windows, right-click the tray icon →
-**Start with Windows** (press **Win+S** first to bring the taskbar/tray back if
-it's hidden).
+**Start with Windows** (press **Ctrl+Alt+H** first to bring the taskbar/tray back
+if it's hidden).
 
 ### Keyboard controls
 
 | Action | What it does |
 |--------|--------------|
 | **Tap Win** | Open the launcher (tap again to close). The Start menu never opens. |
-| **Win+S** | Toggle taskbar-hiding on/off. The tray icon lives *on* the taskbar, so this is your main switch to bring it (and the tray) back. |
+| **Ctrl+Alt+H** | Toggle taskbar-hiding on/off. The tray icon lives *on* the taskbar, so this is your main switch to bring it (and the tray) back. |
 | **Win+D / Win+E / Win+arrows / …** | Native Windows combos still work. |
 
 ### Using the launcher
@@ -106,7 +106,7 @@ it's hidden).
 
 ### Tray menu (right-click the tray icon — reachable when the taskbar is shown)
 
-- **Hide taskbar** — toggle the taskbar on/off (same as Win+S)
+- **Hide taskbar** — toggle the taskbar on/off (same as Ctrl+Alt+H)
 - **Start with Windows** — add/remove the autostart entry
 - **Reindex apps** — rebuild the app list
 - **Quit** — restores the taskbar (and the reserved top strip) and exits
@@ -126,7 +126,8 @@ fast-win-launcher.exe --list   # self-test: write the indexed app list to
 | Piece | File | Mechanism |
 |------|------|-----------|
 | Hide taskbar | `src/taskbar.rs` | `EnumWindows` finds `Shell_TrayWnd` / `Shell_SecondaryTrayWnd`; `WS_EX_LAYERED` + `SetLayeredWindowAttributes(alpha=0)`, re-applied on a 1s timer |
-| Win-key remap | `src/hook.rs` | `WH_KEYBOARD_LL` hook; a lone tap toggles the launcher, **Win+S** toggles taskbar-hiding; other combos are preserved by synthesizing a real `LWIN` only when a second key is pressed |
+| Win-key remap | `src/hook.rs` | `WH_KEYBOARD_LL` hook; a lone tap toggles the launcher; other combos are preserved by synthesizing a real `LWIN` only when a second key is pressed |
+| Taskbar toggle hotkey | `src/tray.rs` | **Ctrl+Alt+H** via `RegisterHotKey` (handled directly by Windows, so it's immune to the low-level-hook timeout) flips taskbar-hiding on/off |
 | Tray + core loop | `src/tray.rs` | message-only window, `Shell_NotifyIcon`, popup menu, the 1s timer |
 | App index | `src/apps.rs` | enumerates `shell:AppsFolder` (Win32 **and** UWP): display name, parsing name, icon |
 | Fuzzy match | `src/fuzzy.rs` | dependency-free subsequence scorer with prefix / word-boundary / run bonuses |
@@ -139,7 +140,7 @@ fast-win-launcher.exe --list   # self-test: write the indexed app list to
 ## Notes & limitations
 
 - The taskbar is made *invisible*, not removed. If it ever gets stuck hidden
-  (e.g. after a crash), run `fast-win-launcher.exe --show`, or press **Win+S**.
+  (e.g. after a crash), run `fast-win-launcher.exe --show`, or press **Ctrl+Alt+H**.
 - The Win-key behaviour relies on a global low-level hook. To stay responsive it
   does the bare minimum inside the hook callback.
 - "Translucent" mode uses real per-pixel alpha (your wallpaper shows through);
