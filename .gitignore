@@ -1,0 +1,31 @@
+# Rust build output
+/target
+
+# AI assistant / agent tooling (kept out of the repo)
+.claude/
+.claude*
+CLAUDE.md
+.codex/
+.codex*
+AGENTS.md
+.cursor/
+.cursorrules
+.aider*
+.continue/
+.windsurf/
+.github/copilot-instructions.md
+.specstory/
+*.ai.md
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local scratch: dev screenshots and debug logs
+*.png
+*.log
+dbg_*.txt
+*_test.png
